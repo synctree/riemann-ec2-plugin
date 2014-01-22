@@ -1,0 +1,4 @@
+{:plugin "ec2"
+ :title  "A bunch of useful streams for dealing with EC2 environments"
+ :git-repo "https://github.com/campanja/riemann-ec2-plugin"
+ :require riemann.plugin.ec2}
