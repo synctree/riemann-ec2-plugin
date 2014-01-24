@@ -9,7 +9,7 @@
 (defn- shorthost [host]
   (first (str/split host #"\.")))
 
-(def cache (atom nil))
+(def ^:private cache (atom nil))
 
 (defn- ec2-service [opts]
   (let [interval (long (* 1000 (get opts :interval 5)))
@@ -21,20 +21,22 @@
           (reset! cache (mapcat :instances instances)))
         (Thread/sleep interval)))))
 
-(defn start-ec2 [opts]
+(defn start-ec2
   "Creates a thread-service which updates the cache used to retrieve information
   regarding EC2 instance status"
+  [opts]
   (let [service (ec2-service opts)]
     (swap! config/next-core core/conj-service service :force)
     service))
 
-(defn get-host-info [host]
+(defn get-host-info
   "Retrieve information regarding one host"
+  [host]
   (first
     (filter
       (comp (partial = (shorthost host)) shorthost :private-dns-name) @cache)))
 
-(defn running-stream [& children]
+(defn running-stream
   "Provides a stream which will only pass on events from hosts with state \"running\"
   to children.
 
@@ -43,6 +45,8 @@
   Note: data regarding instance status is retrieved from a cache. This cache is updated by
   a background thread which you must start from your configuration using the start-ec2 function
   provided by this namespace."
+
+  [& children]
   (fn [event]
     (when-let [host (:host event)]
       (when-let [ec2-info (get-host-info host)]
