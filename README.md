@@ -1,13 +1,22 @@
 # riemann-ec2-plugin
 
-A Clojure library designed to ... well, that part is up to you.
+A Riemann plugin providing various utility functions in regard to EC2.
 
-## Usage
+## Synopsis
 
-FIXME
+```clojure
+
+(load-plugins)
+
+(ec2/start-ec2 {:interval 5 :credentials {:endpoint "us-west-2"}})
+
+(streams
+  (fn [event] (prn "host data" (ec2/get-host-info (:host event))))
+  (ec2/running-stream prn index))
+```
 
 ## License
 
-Copyright © 2014 FIXME
+Copyright © 2014 Campanja AB.
 
-Distributed under the Eclipse Public License, the same as Clojure.
+Distributed under the Apache License, Version 2.0.
